@@ -1,0 +1,36 @@
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'idea'
+
+mainClassName = "picalc.Main"
+libsDirName = "dist"	// Store .jars created in dist.
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+}
+
+dependencies {
+//	compile 'org.functionaljava:functionaljava:3.0'
+//	compile 'com.google.guava:guava:13.0.1'
+//	compile 'net.sf.jopt-simple:jopt-simple:4.4-beta-3'
+//	compile 'com.jcraft:jzlib:1.1.1'
+                
+	testCompile 'junit:junit:4.+'
+}
+
+task copyDependencies(type: Copy) {
+    from configurations.runtime
+    into "$buildDir/libs"
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'picalc',
+			'Main-Class': "${mainClassName}",
+			'Class-Path': configurations.runtime.files.collect { "../libs/" + it.getName(); }.join(" ")
+    }
+    dependsOn copyDependencies
+}
+
+
